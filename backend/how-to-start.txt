@@ -1,0 +1,6 @@
+python -m venv my-env
+.\my-env\Scripts\activate
+python -m pip install --upgrade pip
+pip install -r requirements.txt
+
+# Remember to change the order of requirements.txt and the requirement for FastAPI there's 2 lho.
