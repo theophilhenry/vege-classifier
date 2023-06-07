@@ -16,7 +16,8 @@ fastApiApp = FastAPI()
 fastApiApp.add_middleware(CORSMiddleware,allow_origins=["*"],allow_credentials=True,allow_methods=["*"],allow_headers=["*"])
 
 # Load the Model
-VEGE_MODEL = tf.keras.models.load_model(os.path.join("models", "best_model"))
+# VEGE_MODEL = tf.keras.models.load_model(os.path.join("models", "best_model"))
+VEGE_MODEL = {}
 
 # change-me
 CLASS_NAMES = ['...']
@@ -29,6 +30,30 @@ async def ping():
 async def getInfo(name: str):
   formatted_name = name.replace("%20", " ")
   return db.query(query=f"SELECT * FROM vegetables WHERE name='{formatted_name}';")
+
+@fastApiApp.get('/getInfo-test')
+async def getInfoTest(name: str):
+  return {'data': [{
+    'image_url': 'https://media.tenor.com/m3o2puTnxnEAAAAd/random.gif',
+    'name': 'Carrot',
+    'latin': 'Carrotius Petronas',
+    'description': 'Carrots are rich in vitamins, minerals, and fiber. They are also a good source of antioxidants. Antioxidants are nutriens present in plant-based foods',
+    'nutritions': '<ul><li>Vitamin A</li><li>Vitamin B</li><li>Vitamin C</li></ul>',
+    'benefits': 'benefits',
+    'source': '''https://id.wikipedia.org/wiki/Sambiloto
+
+https://bobo.grid.id/read/08892906/sambiloto-si-raja-pahit-yang-bermanfaat-untuk-kesehatan-tubuh?page=all
+
+https://eprints.umm.ac.id/58390/3/BAB%202.pdf
+
+https://www.alodokter.com/sambiloto-dan-penyakit-pilek
+
+https://ipb.ac.id/news/index/2020/04/prof-dr-drh-umi-cahyaningsih-ungkap-khasiat-sambiloto-pernah-digunakan-untuk-atasi-flu-spanyol/304208fb0a1718cb28d30e6b5ecd10df#:~:text=Bagian%20akar%20dari%20tanaman%20sambiloto,senyawa%20alkane%2C%20keton%20dan%20aldehid.''',
+  }]}
+
+@fastApiApp.post('/predict-test')
+async def predictTest(file: UploadFile = File(...)):
+  return {'class': 'test','confidence': float(0.6)}
 
 @fastApiApp.post('/predict')
 async def predict(file: UploadFile = File(...)):
@@ -46,11 +71,7 @@ async def predict(file: UploadFile = File(...)):
   predicted_class = CLASS_NAMES[max_class_index]
   confidence = np.max(predictions[0])
 
-  # If smaller than Threshold
-  if confidence < 0.7:
-    return {'class': "none",'confidence': float(0)}
-  else:
-    return {'class': predicted_class,'confidence': float(confidence)}
+  return {'class': predicted_class,'confidence': float(confidence)}
 
 def preprocess_file(data) -> np.ndarray:
   # Convert RGBA to RGB

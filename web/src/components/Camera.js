@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { ToastContainer, toast } from 'react-toastify';
 
-const Cameras = (props) => {
+const Camera = (props) => {
   const [videoDevices, setVideoDevices] = useState([])
   const cameraOptions = useRef()
   const video = useRef()
@@ -148,4 +148,4 @@ const Cameras = (props) => {
   )
 }
 
-export default Cameras
+export default Camera
