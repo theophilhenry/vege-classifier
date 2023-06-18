@@ -13,7 +13,7 @@ function App() {
   const [loadingPrediction, setloadingPrediction] = useState(false);
   const [isTreshold, setIsTreshold] = useState(false);
 
-  const [plant, setPlant] = useState({});
+  const [vege, setVege] = useState({});
 
   const [files, setFile] = useState([]);
 
@@ -23,14 +23,14 @@ function App() {
   const sendFile = async (selectedFile) => {
     let formData = new FormData();
     formData.append("file", selectedFile);
-    let res = await axios({ method: "post", url: `http://${URL}:8000/predict-test`, data: formData, });
+    let res = await axios({ method: "post", url: `http://${URL}:8000/predict`, data: formData, });
     if (res.status === 200) return res.data
     else return { 'class': 'none', 'confidence': 0 }
   }
 
-  const getInfo = async (plant_name) => {
-    let res = await axios({ method: "get", url: `http://${URL}:8000/getInfo-test?name=` + plant_name });
-    if (res.status === 200) return res.data
+  const getInfo = async (vegetables) => {
+    let res = await axios({ method: "get", url: `http://${URL}:8000/getInfo?name=` + vegetables });
+    if (res.status === 200) return res.data.data
     else return [{}]
   }
 
@@ -54,7 +54,7 @@ function App() {
 
     // Query the database to get the information
     const result = await getInfo(output.class)
-    setPlant(result.data[0])
+    setVege(result.data.data)
     setloadingPrediction(false)
     setFile([])
   }
@@ -78,8 +78,7 @@ function App() {
               </div>
             </>
             :
-            // IF THE KEYS OF PLANT LENGTH IS 0, THEN THERE'S NO PREDICTION PLANT
-            Object.keys(plant).length === 0 ?
+            Object.keys(vege).length === 0 ?
               <Main
                 predictFiles={predictFiles}
                 setPictureMedium={setPictureMedium} pictureMedium={pictureMedium}
@@ -89,7 +88,7 @@ function App() {
               />
               :
               // ELSE SHOW RESULT PAGE
-              <Result plant={plant} setPlant={setPlant} />
+              <Result vege={vege} setVege={setVege} />
         }
 
       </main>

@@ -9,7 +9,7 @@ class Database:
                 user="root",
                 password="",
                 host="localhost",
-                database="ta_160419078",
+                database="ta_vegetables",
             )
             self.connection.autocommit = False
     def query(self, query, autoCommit=None, fetch="ALL"):

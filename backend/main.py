@@ -16,11 +16,10 @@ fastApiApp = FastAPI()
 fastApiApp.add_middleware(CORSMiddleware,allow_origins=["*"],allow_credentials=True,allow_methods=["*"],allow_headers=["*"])
 
 # Load the Model
-# VEGE_MODEL = tf.keras.models.load_model(os.path.join("models", "best_model"))
-VEGE_MODEL = {}
+VEGE_MODEL = tf.keras.models.load_model(os.path.join("best_model"))
 
 # change-me
-CLASS_NAMES = ['...']
+CLASS_NAMES = ['Bayam', 'Bean', 'Bitter_Gourd', 'Bottle_Gourd', 'Brinjal', 'Broccoli', 'Buncis', 'Cabbage', 'Capsicum', 'Carrot', 'Cauliflower', 'Cucumber', 'Kacang_Panjang', 'Papaya', 'Potato', 'Pumpkin', 'Radish', 'Sawi_Hijau', 'Sawi_Putih', 'Tomato']
 
 @fastApiApp.get('/ping')
 async def ping():
@@ -28,8 +27,10 @@ async def ping():
 
 @fastApiApp.get('/getInfo')
 async def getInfo(name: str):
-  formatted_name = name.replace("%20", " ")
-  return db.query(query=f"SELECT * FROM vegetables WHERE name='{formatted_name}';")
+    formatted_name = name.replace("%20", " ")
+    query_result = db.query(query=f"SELECT * FROM vegetables WHERE name='{formatted_name}';")
+    print(query_result)
+    return query_result
 
 @fastApiApp.get('/getInfo-test')
 async def getInfoTest(name: str):
@@ -77,7 +78,7 @@ def preprocess_file(data) -> np.ndarray:
   # Convert RGBA to RGB
   im = Image.open(BytesIO(data)).convert('RGB')
   # Resize According to Tensorflow Input
-  im = im.resize((299, 299)) # change-me
+  im = im.resize((224, 224)) # change-me
   # Change to numpy array
   im = np.array(im)
   return im
