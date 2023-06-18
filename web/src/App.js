@@ -30,7 +30,7 @@ function App() {
 
   const getInfo = async (vegetables) => {
     let res = await axios({ method: "get", url: `http://${URL}:8000/getInfo?name=` + vegetables });
-    if (res.status === 200) return res.data.data
+    if (res.status === 200) return res.data
     else return [{}]
   }
 
@@ -54,7 +54,7 @@ function App() {
 
     // Query the database to get the information
     const result = await getInfo(output.class)
-    setVege(result.data.data)
+    setVege(result.data[0])
     setloadingPrediction(false)
     setFile([])
   }
